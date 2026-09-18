@@ -51,6 +51,8 @@ MODEL_PATH = os.path.join(
 # LOAD MODEL
 # ============================================================
 
+MODEL_ERROR = None
+
 try:
 
     model_data = joblib.load(MODEL_PATH)
@@ -72,7 +74,22 @@ try:
 
     MODEL_LOADED = True
 
+    print("=" * 60)
+    print("MODEL LOADED SUCCESSFULLY")
+    print(f"MODEL_PATH: {MODEL_PATH}")
+    print("=" * 60)
+
 except Exception as e:
+
+    import traceback
+
+    print("=" * 60)
+    print("MODEL LOAD FAILED")
+    print(f"MODEL_PATH: {MODEL_PATH}")
+    print(f"File exists: {os.path.exists(MODEL_PATH)}")
+    print(f"Error: {e}")
+    traceback.print_exc()
+    print("=" * 60)
 
     prophet_model = None
     business_data = None
@@ -81,7 +98,6 @@ except Exception as e:
     error_threshold = 0
 
     MODEL_LOADED = False
-
     MODEL_ERROR = str(e)
 
 
@@ -136,7 +152,10 @@ def health():
             "Prophet",
 
         "model_loaded":
-            MODEL_LOADED
+            MODEL_LOADED,
+
+        "model_error":
+            MODEL_ERROR
 
     }
 
@@ -209,9 +228,6 @@ def predict(request: PredictionRequest):
             }
 
 
-        # Maximum 10 years of weekly forecasts
-        # 52 weeks × 10 years = 520 weeks
-
         if request.weeks > 520:
 
             return {
@@ -234,14 +250,6 @@ def predict(request: PredictionRequest):
         # ====================================================
         # 4. HISTORICAL TRAINING END
         # ====================================================
-        #
-        # Walmart historical dataset ends:
-        #
-        # 2012-10-26
-        #
-        # Future forecasting must start after
-        # the historical period.
-        # ====================================================
 
         training_end_date = pd.Timestamp(
             "2012-10-26"
@@ -262,10 +270,6 @@ def predict(request: PredictionRequest):
 
         # ====================================================
         # 5. REQUIRE FRIDAY
-        # ====================================================
-        #
-        # Walmart data is weekly and the observations
-        # are recorded on Fridays.
         # ====================================================
 
         if start_date.weekday() != 4:
@@ -325,36 +329,17 @@ def predict(request: PredictionRequest):
 
         for _, row in forecast.iterrows():
 
-            # ------------------------------------------------
-            # EXPECTED SALES
-            # ------------------------------------------------
-
             predicted_sales = float(
                 row["yhat"]
             )
-
-
-            # ------------------------------------------------
-            # LOWER FORECAST
-            # ------------------------------------------------
 
             forecast_lower = float(
                 row["yhat_lower"]
             )
 
-
-            # ------------------------------------------------
-            # UPPER FORECAST
-            # ------------------------------------------------
-
             forecast_upper = float(
                 row["yhat_upper"]
             )
-
-
-            # ------------------------------------------------
-            # PREVENT NEGATIVE SALES
-            # ------------------------------------------------
 
             predicted_sales = max(
                 0,
@@ -371,15 +356,6 @@ def predict(request: PredictionRequest):
                 forecast_upper
             )
 
-
-            # ------------------------------------------------
-            # PLANNING BUFFER
-            # ------------------------------------------------
-            #
-            # Difference between upper forecast and
-            # expected forecast.
-            # ------------------------------------------------
-
             planning_buffer = (
 
                 forecast_upper
@@ -387,16 +363,10 @@ def predict(request: PredictionRequest):
 
             )
 
-
             planning_buffer = max(
                 0,
                 planning_buffer
             )
-
-
-            # ------------------------------------------------
-            # HIGH DEMAND CLASSIFICATION
-            # ------------------------------------------------
 
             if predicted_sales >= high_demand_threshold:
 
@@ -406,26 +376,12 @@ def predict(request: PredictionRequest):
 
                 demand_status = "NORMAL"
 
-
-            # ------------------------------------------------
-            # RECOMMENDED INVENTORY
-            # ------------------------------------------------
-            #
-            # This is a planning signal.
-            # It is NOT an actual Walmart inventory order.
-            # ------------------------------------------------
-
             recommended_inventory = (
 
                 predicted_sales
                 + planning_buffer
 
             )
-
-
-            # ------------------------------------------------
-            # STORE RESULT
-            # ------------------------------------------------
 
             predictions.append({
 
@@ -482,7 +438,6 @@ def predict(request: PredictionRequest):
 
         ]
 
-
         lower_values = [
 
             item["forecast_lower"]
@@ -490,7 +445,6 @@ def predict(request: PredictionRequest):
             for item in predictions
 
         ]
-
 
         upper_values = [
 
@@ -525,11 +479,9 @@ def predict(request: PredictionRequest):
             predicted_values
         )
 
-
         total_lower_forecast = sum(
             lower_values
         )
-
 
         total_upper_forecast = sum(
             upper_values
@@ -546,13 +498,11 @@ def predict(request: PredictionRequest):
             )
         )
 
-
         maximum_sales = float(
             np.max(
                 predicted_values
             )
         )
-
 
         minimum_sales = float(
             np.min(
@@ -574,10 +524,6 @@ def predict(request: PredictionRequest):
 
         return {
 
-            # ------------------------------------------------
-            # FORECAST INFORMATION
-            # ------------------------------------------------
-
             "model":
                 "Prophet",
 
@@ -597,18 +543,8 @@ def predict(request: PredictionRequest):
                     "%Y-%m-%d"
                 ),
 
-
-            # ------------------------------------------------
-            # WEEKLY PREDICTIONS
-            # ------------------------------------------------
-
             "predictions":
                 predictions,
-
-
-            # ------------------------------------------------
-            # SUMMARY
-            # ------------------------------------------------
 
             "summary": {
 
@@ -659,17 +595,7 @@ def predict(request: PredictionRequest):
 
             },
 
-
-            # ------------------------------------------------
-            # BUSINESS IMPACT
-            # ------------------------------------------------
-
             "business_impact": {
-
-
-                # ============================================
-                # INVENTORY
-                # ============================================
 
                 "inventory": {
 
@@ -690,11 +616,6 @@ def predict(request: PredictionRequest):
 
                 },
 
-
-                # ============================================
-                # STAFFING
-                # ============================================
-
                 "staffing": {
 
                     "title":
@@ -710,11 +631,6 @@ def predict(request: PredictionRequest):
                         high_demand_weeks
 
                 },
-
-
-                # ============================================
-                # SUPPLY CHAIN
-                # ============================================
 
                 "supply_chain": {
 
@@ -732,11 +648,6 @@ def predict(request: PredictionRequest):
 
                 },
 
-
-                # ============================================
-                # FINANCE
-                # ============================================
-
                 "finance": {
 
                     "title":
@@ -749,11 +660,6 @@ def predict(request: PredictionRequest):
                         )
 
                 },
-
-
-                # ============================================
-                # TRANSPORTATION
-                # ============================================
 
                 "transportation": {
 
@@ -776,25 +682,17 @@ def predict(request: PredictionRequest):
         }
 
 
-    # ========================================================
-    # ERROR HANDLING
-    # ========================================================
-    
-   except Exception as e:
+    except Exception as e:
 
-    import traceback
-    print("=" * 60)
-    print("MODEL LOAD FAILED")
-    print(f"MODEL_PATH: {MODEL_PATH}")
-    print(f"File exists: {os.path.exists(MODEL_PATH)}")
-    print(f"Error: {e}")
-    traceback.print_exc()
-    print("=" * 60)
+        import traceback
+        traceback.print_exc()
 
-    prophet_model = None
-    business_data = None
+        return {
 
-    high_demand_threshold = 0
-    error_threshold = 0
+            "error":
+                "Prediction failed.",
 
-    MODEL_LOADED = False
+            "details":
+                str(e)
+
+        }
