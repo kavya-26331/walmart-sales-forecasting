@@ -779,12 +779,22 @@ def predict(request: PredictionRequest):
     # ========================================================
     # ERROR HANDLING
     # ========================================================
+    
+   except Exception as e:
 
-    except Exception as e:
+    import traceback
+    print("=" * 60)
+    print("MODEL LOAD FAILED")
+    print(f"MODEL_PATH: {MODEL_PATH}")
+    print(f"File exists: {os.path.exists(MODEL_PATH)}")
+    print(f"Error: {e}")
+    traceback.print_exc()
+    print("=" * 60)
 
-        return {
+    prophet_model = None
+    business_data = None
 
-            "error":
-                str(e)
+    high_demand_threshold = 0
+    error_threshold = 0
 
-        }
+    MODEL_LOADED = False
