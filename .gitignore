@@ -1,0 +1,22 @@
+# Virtual environments
+venv/
+venv311/
+lstm_venv/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment/secrets
+.env
+
+# VS Code
+.vscode/
+
+# Cache
+.pytest_cache/
