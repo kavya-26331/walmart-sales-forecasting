@@ -1,4 +1,4 @@
-﻿# walmart-sales-forecasting
+﻿
 # Walmart Sales Forecasting
 
 An end-to-end **Machine Learning and Time Series Forecasting** project that analyzes Walmart historical sales data, identifies trends, seasonality, and anomalies, compares multiple forecasting models, and provides business-oriented sales predictions through an interactive web dashboard.
