@@ -23,3 +23,5 @@ __pycache__/
 
 # Model files
 outputs/models/
+node_modules/
+dist/
