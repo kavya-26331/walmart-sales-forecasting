@@ -307,7 +307,7 @@ function App() {
 
       const response =
         await fetch(
-          ""https://walmart-sales-forecasting-kzgb.onrender.com/api/predict",",
+          "https://walmart-sales-forecasting-kzgb.onrender.com/api/predict",
           {
             method: "POST",
 
