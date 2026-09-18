@@ -1,28 +1,55 @@
-﻿
 # Walmart Sales Forecasting
 
-An end-to-end **Machine Learning and Time Series Forecasting** project that analyzes Walmart historical sales data, identifies trends, seasonality, and anomalies, compares multiple forecasting models, and provides business-oriented sales predictions through an interactive web dashboard.
+An end-to-end **Machine Learning and Time Series Forecasting** project that analyzes Walmart historical sales data, identifies trends, seasonality, and anomalies, compares multiple forecasting models, and delivers business-oriented sales predictions through an interactive web dashboard.
+
+---
+
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [Key Objectives](#key-objectives)
+3. [Project Workflow](#project-workflow)
+4. [Dataset](#dataset)
+5. [Time Series Analysis](#time-series-analysis)
+6. [Anomaly Analysis](#anomaly-analysis)
+7. [Forecasting Models](#forecasting-models)
+8. [Model Evaluation](#model-evaluation)
+9. [Business Impact](#business-impact)
+10. [Interactive Dashboard](#interactive-dashboard)
+11. [Technology Stack](#technology-stack)
+12. [Project Structure](#project-structure)
+13. [Installation](#installation)
+14. [Usage](#usage)
+15. [Production Workflow](#production-workflow)
+16. [Future Enhancements](#future-enhancements)
+17. [Conclusion](#conclusion)
+
+---
 
 ## Project Overview
 
-Retail sales are influenced by recurring seasonal patterns, holidays, store characteristics, and historical demand. Accurate sales forecasting can help businesses improve inventory planning, staffing, supply-chain operations, finance planning, and transportation capacity.
+Retail sales are influenced by recurring seasonal patterns, holidays, store characteristics, and historical demand. Accurate sales forecasting enables businesses to improve inventory planning, staffing, supply-chain operations, financial planning, and transportation capacity.
 
-This project uses the **Walmart Recruiting – Store Sales Forecasting** dataset to build an end-to-end forecasting pipeline.
+This project uses the **Walmart Recruiting – Store Sales Forecasting** dataset to build an end-to-end forecasting pipeline. Multiple forecasting approaches are explored, evaluated, and compared. **Prophet** is selected as the final forecasting model for the dashboard based on its superior evaluation performance.
 
-The project explores multiple forecasting approaches and ultimately uses **Prophet** as the final forecasting model for the dashboard.
+> **Goal:** Transform historical Walmart sales data into actionable weekly forecasts for better business planning.
+
+---
 
 ## Key Objectives
 
-* Analyze historical Walmart sales trends
-* Identify weekly and monthly sales patterns
-* Understand yearly seasonality and recurring holiday patterns
-* Detect unusual sales behavior and anomalies
-* Compare multiple forecasting approaches
-* Evaluate models using MAE, RMSE, and WMAE
-* Select a final forecasting model based on evaluation results
-* Convert forecasts into business planning insights
-* Provide an interactive forecasting dashboard
-* Design a production-oriented monitoring and alert workflow
+- Analyze historical Walmart sales trends
+- Identify weekly and monthly sales patterns
+- Understand yearly seasonality and recurring holiday patterns
+- Detect unusual sales behavior and anomalies
+- Compare multiple forecasting approaches
+- Evaluate models using MAE, RMSE, and WMAE
+- Select a final forecasting model based on evaluation results
+- Convert forecasts into business planning insights
+- Provide an interactive forecasting dashboard
+- Design a production-oriented monitoring and alert workflow
+
+---
 
 ## Project Workflow
 
@@ -54,18 +81,20 @@ Interactive React Dashboard
 Forecast Monitoring & Alerts
 ```
 
+---
+
 ## Dataset
 
 The project uses the **Walmart Recruiting – Store Sales Forecasting** dataset from Kaggle.
 
-Main files:
+| File | Description |
+|------|-------------|
+| `train.csv` | Historical weekly sales |
+| `test.csv` | Future dates for forecasting |
+| `features.csv` | Temperature, fuel price, markdowns, CPI, unemployment, and holiday information |
+| `stores.csv` | Store type and size information |
 
-* `train.csv` — historical weekly sales
-* `test.csv` — future dates for forecasting
-* `features.csv` — temperature, fuel price, markdowns, CPI, unemployment, and holiday information
-* `stores.csv` — store type and size information
-
-Target variable:
+**Target variable:**
 
 ```text
 Weekly_Sales
@@ -73,63 +102,63 @@ Weekly_Sales
 
 The dataset contains **weekly observations represented by Friday dates**.
 
+---
+
 ## Time Series Analysis
 
 The historical sales data was analyzed to identify:
 
-* Overall sales trends
-* Weekly sales patterns
-* Monthly sales patterns
-* Yearly patterns
-* Holiday effects
-* Recurring seasonal behavior
-* Rolling sales trends
+- Overall sales trends
+- Weekly sales patterns
+- Monthly sales patterns
+- Yearly patterns
+- Holiday effects
+- Recurring seasonal behavior
+- Rolling sales trends
 
-The analysis showed particularly noticeable seasonal behavior during the **November–December holiday period**.
+The analysis revealed particularly noticeable seasonal behavior during the **November–December holiday period**.
+
+---
 
 ## Anomaly Analysis
 
-Anomaly detection was performed to identify unusual sales behavior.
+Anomaly detection was performed to identify unusual sales behavior, including:
 
-The analysis included:
+- Negative sales observations
+- IQR-based outlier detection
+- Large deviations from rolling averages
+- Holiday-related sales spikes
+- Relationship between unusual sales and markdown activity
 
-* Negative sales observations
-* IQR-based outlier detection
-* Large deviations from rolling averages
-* Holiday-related sales spikes
-* Relationship between unusual sales and markdown activity
+Anomalies were **analyzed rather than automatically removed**, since unusual or negative sales values can carry distinct business meanings.
 
-The anomalies were analyzed rather than automatically removed, since unusual or negative sales values can have different business meanings.
+---
 
 ## Forecasting Models
 
 Multiple forecasting approaches were implemented and compared.
 
 ### ARMA
-
 A classical time-series model used as a forecasting baseline.
 
 ### SARMA
-
 A seasonal extension used to model recurring seasonal behavior.
 
 ### Prophet
-
-A modern time-series forecasting model designed to capture trend and seasonality.
-
-**Prophet was selected as the final forecasting model used by the dashboard.**
+A modern time-series forecasting model designed to capture trend and seasonality. **Selected as the final forecasting model used by the dashboard.**
 
 ### LSTM
+A neural-network-based forecasting approach explored using historical sales sequences.
 
-A neural-network-based forecasting approach was also explored using historical sales sequences.
+---
 
 ## Model Evaluation
 
-The models were evaluated using:
+Models were evaluated using:
 
-* **MAE** — Mean Absolute Error
-* **RMSE** — Root Mean Squared Error
-* **WMAE** — Weighted Mean Absolute Error
+- **MAE** — Mean Absolute Error
+- **RMSE** — Root Mean Squared Error
+- **WMAE** — Weighted Mean Absolute Error
 
 ### Evaluation Results
 
@@ -140,31 +169,30 @@ The models were evaluated using:
 | **Prophet** | **1.129M** | **1.579M** | **1.303M** |
 | LSTM        |     1.889M |     2.074M |     1.921M |
 
-Based on the validation results in this project, **Prophet produced the lowest WMAE** among the tested models and was therefore used for the final forecasting dashboard.
+Based on the validation results, **Prophet produced the lowest WMAE** among the tested models and was therefore selected for the final forecasting dashboard.
+
+---
 
 ## Business Impact
 
-The forecast is converted into practical planning signals for different business functions.
+Forecasts are converted into practical planning signals for different business functions.
 
 ### Inventory Planning
-
-Forecasts and upper prediction ranges can help identify high-demand weeks and support inventory preparation.
+Forecasts and upper prediction ranges help identify high-demand weeks and support inventory preparation.
 
 ### Staffing
-
 High-demand periods can be identified to support workforce planning.
 
 ### Supply Chain
-
-Forecast information can help teams review replenishment requirements and capacity.
+Forecast information helps teams review replenishment requirements and capacity.
 
 ### Finance
-
 Expected sales provide a forecasting signal for financial planning.
 
 ### Transportation
-
 High-demand periods can be used to review delivery and transportation capacity.
+
+---
 
 ## Interactive Dashboard
 
@@ -172,22 +200,18 @@ The project includes a React-based dashboard for generating and visualizing fore
 
 Users can:
 
-* Select any calendar date
-* Select the forecast horizon
-* Generate future weekly predictions
-* View expected sales
-* View lower and upper forecast ranges
-* Identify high-demand weeks
-* View business planning recommendations
-* Review detailed weekly predictions
+- Select any calendar date
+- Select the forecast horizon
+- Generate future weekly predictions
+- View expected sales
+- View lower and upper forecast ranges
+- Identify high-demand weeks
+- View business planning recommendations
+- Review detailed weekly predictions
 
 ### Date Handling
 
-The user can select **any calendar date**.
-
-Because the underlying Walmart dataset contains weekly observations represented on Fridays, the system converts a non-Friday selected date to the **next Friday** as the weekly forecast anchor.
-
-For example:
+The user can select **any calendar date**. Because the underlying Walmart dataset contains weekly observations represented on Fridays, the system converts a non-Friday selected date to the **next Friday** as the weekly forecast anchor.
 
 ```text
 Selected Date
@@ -205,34 +229,34 @@ Weekly Predictions
 
 This allows flexible calendar selection while keeping predictions aligned with the weekly structure of the dataset.
 
+---
+
 ## Technology Stack
 
 ### Machine Learning / Data Science
-
-* Python
-* Pandas
-* NumPy
-* Scikit-learn
-* Statsmodels
-* Prophet
-* TensorFlow / Keras
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- Statsmodels
+- Prophet
+- TensorFlow / Keras
 
 ### Visualization
-
-* Matplotlib
-* Seaborn
+- Matplotlib
+- Seaborn
 
 ### Frontend
-
-* React
-* Vite
-* JavaScript
-* CSS
+- React
+- Vite
+- JavaScript
+- CSS
 
 ### Backend
+- Python
+- FastAPI
 
-* Python
-* FastAPI
+---
 
 ## Project Structure
 
@@ -272,9 +296,74 @@ Walmart-Sales-Forecasting/
 └── .gitignore
 ```
 
+---
+
+## Installation
+
+### Prerequisites
+
+- Python 3.9+
+- Node.js 16+
+- npm or yarn
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/<your-username>/Walmart-Sales-Forecasting.git
+cd Walmart-Sales-Forecasting
+```
+
+### 2. Set Up the Python Environment
+
+```bash
+python -m venv venv
+source venv/bin/activate       # On Windows: venv\Scripts\activate
+
+pip install -r requirements.txt
+```
+
+### 3. Set Up the Frontend
+
+```bash
+cd frontend/dashboard
+npm install
+```
+
+---
+
+## Usage
+
+### Run the Backend API
+
+```bash
+cd backend
+uvicorn main:app --reload
+```
+
+The API will be available at `http://localhost:8000`.
+
+### Run the Frontend Dashboard
+
+```bash
+cd frontend/dashboard
+npm run dev
+```
+
+Open the printed local URL (typically `http://localhost:5173`) in your browser.
+
+### Explore the Notebooks
+
+```bash
+jupyter notebook notebooks/
+```
+
+Run the notebooks sequentially (`01` → `09`) to reproduce the full analysis, model comparison, and business insights.
+
+---
+
 ## Production Workflow
 
-A possible production workflow for the system is:
+A possible production workflow for the system:
 
 ```text
 New Weekly Sales Data
@@ -292,12 +381,41 @@ Business Action
 Periodic Model Retraining
 ```
 
-A practical starting strategy for this project is **weekly forecasting and monitoring with periodic model retraining**. The current project demonstrates this workflow using the historical Walmart dataset rather than a live Walmart data stream.
+A practical starting strategy is **weekly forecasting and monitoring with periodic model retraining**. The current project demonstrates this workflow using the historical Walmart dataset rather than a live Walmart data stream.
 
+---
 
+## Future Enhancements
+
+- Connect the system to a live sales data source
+- Store forecasts in a database
+- Add automated model retraining
+- Add email/dashboard alerts
+- Forecast at individual Store–Department level
+- Add automated model monitoring
+- Deploy the complete system to the cloud
+- Add authentication and user management
+
+---
 
 ## Conclusion
 
 This project demonstrates an end-to-end approach to **retail sales forecasting**, from data exploration and anomaly analysis to model comparison, Prophet-based forecasting, business impact analysis, and interactive visualization.
 
 > **Goal: Transform historical Walmart sales data into actionable weekly forecasts for better business planning.**
+
+---
+
+## License
+
+This project is intended for educational and portfolio purposes. The dataset is provided by Kaggle under its respective terms of use.
+
+## Acknowledgements
+
+- Kaggle — Walmart Recruiting – Store Sales Forecasting dataset
+- Prophet — Meta's open-source forecasting library
+- The open-source community behind Python, React, and FastAPI
+
+---
+
+**If you find this project useful, consider giving it a ⭐ on GitHub.**
